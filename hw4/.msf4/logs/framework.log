@@ -1,0 +1,106 @@
+[05/01/2020 22:26:37] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:26:37] [d(0)] core: Created user based module store
+[05/01/2020 22:26:39] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:26:39] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:26:40] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:26:40] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:27:14] [e(0)] core: /usr/share/metasploit-framework/modules/exploits/linux/smtp/haraka.rb failed to load due to the following error: Errno::ENOENT No such file or directory @ rb_sysopen - /usr/share/metasploit-framework/modules/exploits/linux/smtp/haraka.rb Call stack: /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `initialize' /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `open' /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `read_module_content' /usr/share/metasploit-framework/lib/msf/core/modules/loader/base.rb:127:in `load_module' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:91:in `block in load_cached_module' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:86:in `each' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:86:in `load_cached_module' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:45:in `create' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:27:in `[]' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:77:in `block in each' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:76:in `each' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:76:in `each' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1191:in `sort' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1191:in `show_module_set' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1031:in `show_exploits' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:529:in `block in cmd_show' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:512:in `each' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:512:in `cmd_show' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:523:in `run_command' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:474:in `block in run_single' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:468:in `each' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:468:in `run_single' /usr/share/metasploit-framework/lib/rex/ui/text/shell.rb:158:in `run' /usr/share/metasploit-framework/lib/metasploit/framework/command/console.rb:48:in `start' /usr/share/metasploit-framework/lib/metasploit/framework/command/base.rb:82:in `start' /usr/bin/msfconsole:49:in `<main>'
+[05/01/2020 22:27:27] [e(0)] core: /usr/share/metasploit-framework/modules/exploits/windows/smb/ms17_010_eternalblue_win8.rb failed to load due to the following error: Errno::ENOENT No such file or directory @ rb_sysopen - /usr/share/metasploit-framework/modules/exploits/windows/smb/ms17_010_eternalblue_win8.rb Call stack: /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `initialize' /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `open' /usr/share/metasploit-framework/lib/msf/core/modules/loader/directory.rb:77:in `read_module_content' /usr/share/metasploit-framework/lib/msf/core/modules/loader/base.rb:127:in `load_module' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:91:in `block in load_cached_module' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:86:in `each' /usr/share/metasploit-framework/lib/msf/core/module_manager/cache.rb:86:in `load_cached_module' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:45:in `create' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:27:in `[]' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:77:in `block in each' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:76:in `each' /usr/share/metasploit-framework/lib/msf/core/module_set.rb:76:in `each' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1191:in `sort' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1191:in `show_module_set' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:1031:in `show_exploits' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:529:in `block in cmd_show' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:512:in `each' /usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/modules.rb:512:in `cmd_show' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:523:in `run_command' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:474:in `block in run_single' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:468:in `each' /usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:468:in `run_single' /usr/share/metasploit-framework/lib/rex/ui/text/shell.rb:158:in `run' /usr/share/metasploit-framework/lib/metasploit/framework/command/console.rb:48:in `start' /usr/share/metasploit-framework/lib/metasploit/framework/command/base.rb:82:in `start' /usr/bin/msfconsole:49:in `<main>'
+[05/01/2020 22:32:30] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:32:30] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:32:31] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:32:31] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:32:33] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:32:33] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:32:34] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:32:34] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:39:36] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:39:36] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:39:37] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:39:37] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:39:39] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:40:36] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:40:36] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:40:37] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:40:37] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:40:39] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:40:40] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:40:40] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:40:40] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:40:40] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:40:43] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:41:31] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:41:31] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:41:32] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:41:32] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:41:34] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:42:50] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:42:50] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:42:51] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:42:51] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:42:53] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:46:31] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:46:31] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:46:32] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:46:32] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:46:33] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:50:38] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:50:38] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:50:39] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:50:39] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:50:41] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 22:59:35] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:59:35] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 22:59:36] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 22:59:36] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 22:59:37] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:03:16] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:03:16] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:03:17] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:03:17] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:03:18] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:03:35] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:03:35] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:03:36] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:03:36] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:03:38] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:06:17] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:06:17] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:06:18] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:06:18] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:06:20] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:06:32] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:06:32] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:06:33] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:06:33] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:06:35] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:08:44] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:08:44] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:08:45] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:08:45] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:08:46] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:09:24] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:09:24] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:09:25] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:09:25] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:09:26] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:09:53] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:09:53] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:09:54] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:09:54] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:09:56] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:10:21] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:10:21] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:10:22] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:10:22] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:10:24] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:36:50] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:36:50] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:36:51] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:36:51] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:36:52] [e(0)] core: Failed to connect to the database: No database YAML file
+[05/01/2020 23:37:04] [e(0)] core: Dependency for windows/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:37:04] [e(0)] core: Dependency for windows/x64/encrypted_shell_reverse_tcp is not supported
+[05/01/2020 23:37:04] [e(0)] core: Dependency for windows/x64/encrypted_reverse_tcp is not supported
+[05/01/2020 23:37:04] [e(0)] core: Dependency for windows/encrypted_reverse_tcp is not supported
+[05/01/2020 23:37:06] [e(0)] core: Failed to connect to the database: No database YAML file

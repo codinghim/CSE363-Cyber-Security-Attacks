@@ -1,0 +1,183 @@
+CSE363: Offensive Security, Spring 2020
+
+Homework 4: Buffer Overflow Exploitation
+------------------------------------------------------------------------------
+
+Submission deadline: 5/1/2020 11:59pm EDT
+Submission through: https://blackboard.stonybrook.edu
+
+
+In this assignment you will write exploits for some trivial vulnerable
+programs. The goal of all exploits is to launch a shell as root. Each script
+should prepare the appropriate malicious input and launch the vulnerable
+program with it to get a shell. The exploits should be launched from a
+non-root shell. You can use any language you prefer for the exploit scripts.
+
+
+0) Preparation
+
+You can develop your exploits in any environment you want, but your final
+exploit should work on the 32-bit Kali Linux we have used for the previous
+assignments (better not 'apt-get upgrade' the system - this will make your
+exploits more easily reproducible).
+
+- Disable ASLR using the follow command:
+root@kali:~# echo 0 > /proc/sys/kernel/randomize_va_space
+
+- Change the default shell from 'dash' to 'zsh':
+root@kali:~# rm /bin/sh
+root@kali:~# ln -s /bin/zsh /bin/sh
+
+The reason for this is that in Kali, /bin/sh is actually a symbolic link to
+/bin/dash. Modern shells, including dash, have the following security measure:
+if they detect that they have started as SUID root, they drop their privileges
+(reset EUID to UID). In part 2 below, this would drop the spawned shell back
+to testuser despite vuln2 having the setuid bit on, i.e., you won't get a
+root shell but just a regular user shell when using /bin/dash.
+
+- Create a normal user account and switch to it:
+root@kali:~# adduser testuser
+root@kali:~# usermod -a -G sudo testuser
+root@kali:~# su testuser
+
+
+1) Shellcode Injection
+
+Your goal is to exploit the following simple program, when compiled with the
+following commands:
+
+testuser@kali:~$ cat vuln1.c
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char* argv[]) {
+
+  unsigned int i;
+  char buf[256];
+
+  for (i=0; i<strlen(argv[1]); i++) {
+    if (((unsigned int)argv[1][i] >= 0x68) && ((unsigned int)argv[1][i] <= 0x6e)) {
+      argv[1][i] = 'x';
+    }
+  }
+
+  strcpy(buf, argv[1]);
+
+  printf("Input: %s\n", buf);
+  return 0;
+}
+
+testuser@kali:~$ gcc -g -fno-stack-protector -z execstack -mpreferred-stack-boundary=2 -o vuln1 vuln1.c
+testuser@kali:~$ sudo chown root vuln1
+testuser@kali:~$ sudo chgrp root vuln1
+testuser@kali:~$ sudo chmod +s vuln1
+
+The main challenge here is to use an appropriate shellcode that will withstand
+the mangling of any '/bin/sh' or similar ASCII string used in the shellcode by
+the for loop.
+
+
+2) Ret2libc
+
+Your goal is to exploit the following simple program, when compiled with the
+following commands:
+
+testuser@kali:~$ cat vuln2.c
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char* argv[]) {
+
+  char buf[256];
+
+  strcpy(buf, argv[1]);
+  printf("Input: %s\n", buf);
+
+  return 0;
+}
+
+testuser@kali:~$ gcc -g -fno-stack-protector -mpreferred-stack-boundary=2 -o vuln2 vuln2.c
+testuser@kali:~$ sudo chown root vuln2
+testuser@kali:~$ sudo chgrp root vuln2
+testuser@kali:~$ sudo chmod +s vuln2
+
+This is a classic ret2libc exploit. Make sure to include a call to exit()
+after launching your shell, for graceful termination of the program.
+
+
+3) Chained ret2libc/ROP
+
+Your goal is to exploit the following simple program, when compiled with the
+following commands:
+
+testuser@kali:~$ cat vuln3.c
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main(int argc, char* argv[]) {
+
+  char buf[256];
+
+  seteuid(getuid());     /* Drop privileges */
+
+  strcpy(buf, argv[1]);
+  printf("Input: %s\n", buf);
+
+  return 0;
+}
+
+testuser@kali:~$ gcc -g -fno-stack-protector -mpreferred-stack-boundary=2 -o vuln3 vuln3.c
+testuser@kali:~$ sudo chown root vuln3
+testuser@kali:~$ sudo chgrp root vuln3
+testuser@kali:~$ sudo chmod +s vuln3
+
+The main challenge here is that the program drops its root privileges, so
+using the previous exploit this time will give just a regular user shell. You
+can still exploit this program by chaining a call to seteuid(0) before
+spawning your shell ('man seteuid' for more details).
+
+
+What to submit:
+
+A tarball with:
+- a Makefile for generating the vulnerable binaries
+- the three exploits
+- a README file with a brief description of your strategy in each case
+
+
+Hints
+
+- You can either handcraft your own shellcode to avoid the mangled bytes, or
+  use an encoder (e.g., from Metasploit) to generate a shellcode that doesn't
+  contain those bytes.
+
+- Libc has all the ingredients you need for the code reuse exploits. For
+  example, you can use execve() or system() to launch /bin/sh, while the
+  string "/bin/sh" itself (which has to be passed as an argument to those
+  functions) also exists inside the library.
+
+- The argument to seteuid should be zero, which means that you cannot simply
+  include it as part of your ROP payload as strcpy() will stop at a zero byte.
+  You will thus need to use a few ROP gadgets to initialize this argument in
+  its appropriate location on the stack.
+
+- You can use ROPgadget or any other gadget finding tool (Ropper, ROPium,
+  ROPshell, among many others) to find the gadgets you need (for generating
+  the zero value on the stack, and adjusting the stack for calling the next
+  function). Remember that you can look for gadgets in any executable memory
+  segment of the process.
+
+- You may find the following advice useful:
+  http://www.mathyvanhoef.com/2012/11/common-pitfalls-when-writing-exploits.html
+
+- When switching to /bin/zsh (Part 0 above), the simple shellcode we've been
+  using in our tutorials so far does not work anymore. Try this one instead,
+  or just search online for any other one:
+  
+  char sc[] = "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69"
+              "\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80";
+
+  Also available here:
+  https://piazza.com/class_profile/get_resource/k5psogz57l86i5/k8onnzsjq4e499

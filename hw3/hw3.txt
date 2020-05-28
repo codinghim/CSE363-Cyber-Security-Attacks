@@ -1,0 +1,337 @@
+HW3 Reverse Engineering
+
+HIMCHAN YUN(111322206)
+=============================================================================================
+Number
+=============================================================================================
+First, I tried file number and strings number to see if there is any information.
+
+kali@kali:~/Desktop$ file number
+number: ELF 32-bit LSB shared object, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=f8ca93addd368c65d626901f74c3c9eb79b8ec1a, stripped
+
+kali@kali:~/Desktop$ strings number
+tdl 
+/lib/ld-linux.so.2
+libc.so.6
+_IO_stdin_used
+fflush
+exit
+__isoc99_scanf
+puts
+stdin
+printf
+strlen
+memset
+atoi
+__cxa_finalize
+strcmp
+__libc_start_main
+GLIBC_2.7
+GLIBC_2.1.3
+GLIBC_2.0
+_ITM_deregisterTMCloneTable
+__gmon_start__
+_ITM_registerTMCloneTable
+[^_]
+Wrong number
+Enter the right number: 
+%27s
+CSE363ESC
+Your number corresponds to %s, well done!
+;*2$"
+
+kali@kali:~/Desktop$ ./number
+Enter the right number: CSE363ESC
+Wrong number
+
+
+I saw that it is stripped file so it does not have any symbols. and I see some strings that might
+help me to find password. I tried to run a program. The programs seems to enter a pasword and if I put
+a wrong password it prints out a string that could be found in "strings number".
+I tried CSE363ESC which was in strings number but it failed as shown.
+
+Next, I used gdb to reverse engineer the number file. ( gdb number )
+I tried info functions in gdb. However, it was a stripped file so all symbols including function names
+are stripped. Then, I tried info file to see the entry point.
+
+Local exec file:
+        `/home/kali/Desktop/number', file type elf32-i386.
+        Entry point: 0x10e0
+
+From above, I found the Entry point. I set a break point at 0x10e0 and tried to run but it said cannot
+insert breakpoint at the point. I tried info file again then I saw that the memory address is changed.
+
+Local exec file:
+        `/home/kali/Desktop/number', file type elf32-i386.
+        Entry point: 0x4010e0
+
+I was not sure what happened. It might be related to offset or library function to start the main.
+Then, I set the entry point at 0x4010e0, removed the first breakpoint and then run again.
+I successfully reached at breakpoint which is probably the start of main function but I could not use
+disas or step commands because function symbols are stripped. so I tried x/50i 0x4010e0 to see 50 
+instructions from the entry point. 
+
+   0x401103:    push   eax
+   0x401104:    push   ecx
+   0x401105:    push   esi
+   0x401106:    push   DWORD PTR [ebx-0x8]
+   0x40110c:    call   0x401090 <__libc_start_main@plt>
+
+As expected, I could see the libc start main function that is libc function that help running main function.
+I kept track down the flow of instructions and then I reached at the printf function.
+
+   0x0040125e:  add    ebx,0x2da2
+   0x00401264:  sub    esp,0xc
+   0x00401267:  lea    eax,[ebx-0x1feb]
+   0x0040126d:  push   eax
+   0x0040126e:  call   0x401040 <printf@plt>
+
+Before calling printf libc function, it pushes eax on the stack which means that eax contains a
+string to print. The value of eax seems to be loaded from ebx with some calculation. To get the
+value of eax, I set the breakpoint at 0x40126e and typed info r to see the state of registers.
+
+(gdb) info r
+eax            0x402015            4202517
+ecx            0xbffff330          -1073745104
+edx            0xbffff354          -1073745068
+ebx            0x404000            4210688
+
+It seems that eax is calculated from ebx. So I retrived value at the address of eax(0x402015).
+
+(gdb) x/s 0x402015
+0x402015:       "Enter the right number: "
+
+I tried x/s because it must be string to be passed to printf function.
+So, I realized that this is the point where you print the string above and take input from the user.
+
+   0x00401273:  add    esp,0x10
+   0x00401276:  sub    esp,0x8
+   0x00401279:  lea    eax,[ebp-0x5e]
+   0x0040127c:  push   eax
+   0x0040127d:  lea    eax,[ebx-0x1fd2]
+   0x00401283:  push   eax
+   0x00401284:  call   0x4010b0 <__isoc99_scanf@plt>
+   0x00401289:  add    esp,0x10
+   0x0040128c:  mov    DWORD PTR [ebp-0x14],eax
+   0x0040128f:  cmp    DWORD PTR [ebp-0x14],0x1
+   0x00401293:  je     0x40129a
+   0x00401295:  call   0x401219
+   0x0040129a:  movzx  eax,BYTE PTR [ebp-0x5e]
+   0x0040129e:  cmp    al,0x30
+   0x004012a0:  je     0x4012a7
+   0x004012a2:  call   0x401219
+   0x004012a7:  movzx  eax,BYTE PTR [ebp-0x5d]
+   0x004012ab:  cmp    al,0x36
+   0x004012ad:  je     0x4012b4
+   0x004012af:  call   0x401219
+   0x004012b4:  mov    eax,DWORD PTR [ebx-0xc]
+   0x004012ba:  mov    eax,DWORD PTR [eax]
+   0x004012bc:  sub    esp,0xc
+   0x004012bf:  push   eax
+   0x004012c0:  call   0x401050 <fflush@plt>
+
+I kept tracking down the lines and found out that the programs use 2 cmp instructions to compare 
+and then jump to 0x40129a or proceeds to call 0x401219. So I set the breakpoint at 0x40128f and
+run the program with password 123456. I found that it does not match and goes to 0x401219 which
+prints out that I entered the wrong number. I saw that cmp al, 0x30 and cmp al,0x36 which compares
+al(which is the lower 8 bits of ax and ax is the lower 16 bits of eax) and 0x30 which is "0" and 0x36
+which is string "6". I tried 06 for password and the program proceeds to next instructions.
+However, it was still an wrong password. I tried 0654321 for password and saw what happened.
+
+   0x00401320:  call   0x4010c0 <atoi@plt>
+   0x00401325:  add    esp,0x10
+   0x00401328:  mov    ecx,eax
+   0x0040132a:  lea    edx,[ebp-0x1e]
+   0x0040132d:  mov    eax,DWORD PTR [ebp-0x10]
+   0x00401330:  add    eax,edx
+   0x00401332:  mov    BYTE PTR [eax],cl
+   0x00401334:  lea    edx,[ebp-0x1e]
+   0x00401337:  mov    eax,DWORD PTR [ebp-0x10]
+   0x0040133a:  add    eax,edx
+   0x0040133c:  movzx  eax,BYTE PTR [eax]
+   0x0040133f:  add    eax,0x3
+   0x00401342:  mov    ecx,eax
+   0x00401344:  lea    edx,[ebp-0x1e]
+   0x00401347:  mov    eax,DWORD PTR [ebp-0x10]
+   0x0040134a:  add    eax,edx
+   0x0040134c:  mov    BYTE PTR [eax],cl
+   0x0040134e:  add    DWORD PTR [ebp-0xc],0x3
+   0x00401352:  add    DWORD PTR [ebp-0x10],0x1
+   0x00401356:  sub    esp,0xc
+   0x00401359:  lea    eax,[ebp-0x1e]
+   0x0040135c:  push   eax
+   0x0040135d:  call   0x401080 <strlen@plt>
+   0x00401362:  add    esp,0x10
+   0x00401365:  cmp    eax,0x8
+   0x00401368:  ja     0x401382
+   0x0040136a:  sub    esp,0xc
+   0x0040136d:  lea    eax,[ebp-0x5e]
+   0x00401370:  push   eax
+   0x00401371:  call   0x401080 <strlen@plt>
+   0x00401376:  add    esp,0x10
+   0x00401379:  cmp    DWORD PTR [ebp-0xc],eax
+   0x0040137c:  jb     0x4012ef
+   0x00401382:  lea    edx,[ebp-0x1e]
+   0x00401385:  mov    eax,DWORD PTR [ebp-0x10]
+   0x00401388:  add    eax,edx
+   0x0040138a:  mov    BYTE PTR [eax],0x0
+   0x0040138d:  sub    esp,0x8
+   0x00401390:  lea    eax,[ebx-0x1fcd]
+   0x00401396:  push   eax
+   0x00401397:  lea    eax,[ebp-0x1e]
+   0x0040139a:  push   eax
+   0x0040139b:  call   0x401030 <strcmp@plt>
+   0x004013a0:  add    esp,0x10
+   0x004013a3:  test   eax,eax
+   0x004013a5:  jne    0x4013bf
+   0x004013a7:  sub    esp,0x8
+   0x004013aa:  lea    eax,[ebp-0x1e]
+   0x004013ad:  push   eax
+   0x004013ae:  lea    eax,[ebx-0x1fc0]
+   0x004013b4:  push   eax
+   0x004013b5:  call   0x401040 <printf@plt>
+   0x004013ba:  add    esp,0x10
+   0x004013bd:  jmp    0x4013c4
+   0x004013bf:  call   0x401219
+
+I saw that printf function at 0x004013b5 and realized that ebx and ebp is set to the certain number.
+(ebx:0x404000, ebp:0xbffff318). From above we tried [ebp - 0x14] and found out this is the input that
+we put. and ebx is strings that is stored in the program. I tracked down ebx - 0x1fc0 and this comes
+out to be the following string.
+
+(gdb) x 0x402040
+0x402040:       "Your number corresponds to %s, well done!\n"
+
+This was the string when I put the correct password. So I need to reach 4013b5 to match the password
+without reaching 0x401219 which is printing error string.
+
+
+Then, I tried few passwords to see how the program behaves. I saw that a combination of strlen, strlen 
+and strcmp functions repeats according to the length of password. Then, I carefully looked at strcmp
+which might compares the correct password with my input. Before 0x40139b which calls stcmp, the program
+pushes eax twice which should be two arguments for strcmp. 
+
+   0x00401390:  lea    eax,[ebx-0x1fcd]
+   0x00401396:  push   eax
+   0x00401397:  lea    eax,[ebp-0x1e]
+   0x0040139a:  push   eax
+   0x0040139b:  call   0x401030 <strcmp@plt>
+
+(gdb) x/s 0x00402033
+0x402033:       "CSE363ESC"
+
+(gdb) x/s 0xbffff2fa
+0xbffff2fa:     "C\277\277"
+
+I examined eax at 0x00401396 and 0x0040139a and found out that first eax is related to ebx whic 
+was CSE363ESC and my string is something weired like "C\277\277" when I put 064444444.
+Then, I tried 06433321 and 06400000 and found out that 064(which is 0x43) makes a string "C". I realized that
+I can make a string with 3 numbers and then I need to match the "CSE363ESC". 
+I made a table like below
+
+	064	080	066	048	051	048	066	080	064
+	 C	 S	 E	 3	 6	 3	 E	 S	 C	
+	0x43	0x53	0x45	0x33	0x36	033	0x45	0x53	0x42
+
+Fianlly, I tried 064080066048051048066080064 and it was a correct password.
+
+kali@kali:~/Desktop$ ./number
+Enter the right number: 064080066048051048066080064
+Your number corresponds to CSE363ESC, well done!
+
+The password for number file was 064080066048051048066080064
+
+==============================================================================================
+
+==============================================================================================
+Key
+==============================================================================================
+
+kali@kali:~/Desktop$ file key
+key: ELF 32-bit LSB shared object, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=b53ba5b802cbba7fa58131c3a17c6d923f0eadef, stripped
+kali@kali:~/Desktop$ strings key
+td\ 
+/lib/ld-linux.so.2
+libc.so.6
+_IO_stdin_used
+strncpy
+puts
+printf
+calloc
+strlen
+rand
+__cxa_finalize
+__libc_start_main
+free
+GLIBC_2.1.3
+GLIBC_2.0
+_ITM_deregisterTMCloneTable
+__gmon_start__
+_ITM_registerTMCloneTable
+[^_]
+oy/*/szzoy
+.,.,
+Usage: %s <key>
+Hty<wye<uo<
+snny
+h2<_sr{n}hip}husro=
+Knsr{<wye2
+;*2$"
+.shstrtab
+.interp
+.note.gnu.build-id
+.gnu.hash
+.dynsym
+.dynstr
+.gnu.version
+.gnu.version_r
+.rel.dyn
+.rel.plt
+.init
+.plt.got
+.text
+.fini
+.rodata
+.eh_frame_hdr
+.eh_frame
+.init_array
+.fini_array
+.dynamic
+.got.plt
+.data
+.bss
+
+Similarly, I tried file and strings on key. key file was also a stripped file and I did not see any
+obvious string.
+
+I tried to track down the functions and subroutine using gdb and ida.
+I found out that the program at some time calls 0x40126a that handles strings.
+The following is the brief pseudocode that I analyzed.
+0x40126a (arg* x){
+	0x401100(b,c)
+	strlen(someaddress)
+	set eax to a stored string. i.e)"\177ay/*/szzoy\177.,.,"
+	0x4011f9("\177ay/*/szzoy\177.,.,")
+	-> 11f9 sets eax to string("cse363offsec2020")
+}
+0x401100(arg* b, arg*c) {
+	set ebx to some address
+}
+0x4011f9(string){
+	1100(ebp, ebx)
+	calloc(1,100)
+	strlen(address of our input)
+	for loop{
+		do something
+	}
+	set eax to string
+}
+
+
+While I analyzing all steps inside function 0x40126a, I found out that 0x4011f9 sets eax to
+a string "cse363offsec2020" and I tried on key and I got the answer.
+
+kali@kali:~/Desktop$ ./key cse363offsec2020
+The key is correct. Congratulations!
+
+==============================================================================================

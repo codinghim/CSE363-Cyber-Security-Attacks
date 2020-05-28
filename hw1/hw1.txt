@@ -1,0 +1,71 @@
+CSE363: Offensive Security, Spring 2020
+
+Homework 1: Network Sniffing
+------------------------------------------------------------------------------
+
+Submission deadline: 2/21/2020 11:59pm EDT
+Submission through: https://blackboard.stonybrook.edu
+
+
+In this assignment you will get familiar with the Scapy network traffic
+capture/analysis/generation framework, and use it to develop a passive
+HTTP/TLS connection monitoring tool written in Python.
+
+Your program should conform to the following specification:
+
+sniffer.py [-i interface] [-r tracefile] expression
+
+-i  Listen on network device <interface> (e.g., eth0) indefinitely. If not
+    specified, the program should pick a default interface to listen on.
+
+-r  Read packets from <tracefile> (tcpdump format). Useful for analyzing
+    network traces that have been captured previously.
+
+The optional <expression> argument is a BPF filter that specifies a subset of
+the traffic to be monitored (similar to tcpdump).
+
+Your tool should perform the following operations:
+
+1) For HTTP traffic, it should parse GET and POST requests and print the
+method used (GET or POST), the destination host name contained in the "Host:"
+field (e.g., "www.cs.stonybrook.edu"), and the Request URI.
+
+2) for TLS traffic, it should parse the Client Hello message and print the TLS
+version number, and the destination host name (e.g., "www.cs.stonybrook.edu")
+that is present in the Server Name Indication field.
+
+For both, it should also print a timestamp and the source and destination IP
+addresses and ports. Example output:
+
+2020-02-04 13:14:33.224487 HTTP 192.168.190.128:57234 -> 23.185.0.4:80 www.cs.stonybrook.edu GET /research/NationalSecurityInstitute
+2020-02-04 13:14:24.494045 TLS v1.3 192.168.190.128:59330 -> 104.244.42.193:443 twitter.com
+
+Your tool should be able to recognize HTTP and TLS traffic *irrespectively* of
+the destination port number used. It is possible that "hidden" HTTP/TLS
+servers may be listening to ports other than 80/443, and your tool will be
+useful for detecting them.
+
+You are *not* required to perform any form of TCP stream reassembly. For your
+implementation, it is sufficient to just parse each TCP packet individually.
+
+Your program will be tested on 32-bit Kali Linux v2020.1, so make sure your
+code works in this environment:
+https://www.offensive-security.com/kali-linux-vm-vmware-virtualbox-image-download/
+
+
+What to submit:
+
+A tarball (.tar.gz) with:
+- all required source code files
+- an ASCII file named README with a brief description of your program,
+  and some example output from a test run
+
+
+Hints
+
+- Scapy has great online documentation:
+  https://scapy.readthedocs.io/en/latest/
+
+- Scapy does not load by default all available parsers. Check out
+  load_layer("http") and load_layer("tls"). You may have to "import
+  cryptography" for the TLS parser to work properly.
