@@ -1,6 +1,6 @@
-Author: HIMCHAN YUN(111322206), Stony Brook University CSE363
+# HW1 sniffer.py
 
-HW1 sniffer.py
+Author: Daniel Himchan Yun, Stony Brook University CSE363
 
 This program is a python program that sniffs TLS and HTTP traffic using Scapy library.
 When TLS Client hello packet and HTTP Requests packets will only be prited.
