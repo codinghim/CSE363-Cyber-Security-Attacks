@@ -1,6 +1,6 @@
-Author: HIMCHAN YUN(111322206), Stony Brook University CSE363
+# HW2 dnspoison.py
 
-HW2 dnspoison.py
+Author: Daniel Himchan Yun, Stony Brook University CSE363
 
 This program is a python program that sniff packets and poison DNS so that a victim cannot reach
 certain URLs, rather it reaches to the attacker's page.
