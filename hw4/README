@@ -1,5 +1,6 @@
-HIMCHAN YUN(111322206)
-hw#4
+# HW4 Buffer Overflow Exploitation
+
+Author: Daniel Himchan Yun, Stony Brook University CSE363
 
 1. I used the following command to find the shellcode that does not contain bytes between x68 and x6e. 
 
