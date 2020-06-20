@@ -20,7 +20,7 @@ a list of commands runs on it.
 Features:   1) I used client key to detect if the packet is indeed from a client or a server
             2) Fernet encryption is used to hide raw string so that it is hard to be detected
 
-2) servercnc1.py and clientcnc2.py
+2) servercnc2.py and clientcnc2.py
 
     sudo python3 servercnc2.py -c [commands]
     python clientcnc2.py
