@@ -1,12 +1,12 @@
 HIMCHAN YUN(11322206)
-Project Cover Command and control
+##Project Covert Command and control
 
 Commands and control which is also called as CNC or C2 is the type of attack
 that establishes connection between a server and a client. When the server
-sends a list of commands, commands runs covertly on client side to retrieve data.
+sends a list of commands, commands run covertly on client side to retrieve data.
 
-2 Versions of program
-1) servercnc1.py and clientcnc1.py
+### Two Versions of program
+### 1) servercnc1.py and clientcnc1.py
 
     sudo python servercnc1.py -c [commands]
     sudo python clientcnc1.py
@@ -20,7 +20,7 @@ a list of commands runs on it.
 Features:   1) I used client key to detect if the packet is indeed from a client or a server
             2) Fernet encryption is used to hide raw string so that it is hard to be detected
 
-2) servercnc2.py and clientcnc2.py
+### 2) servercnc2.py and clientcnc2.py
 
     sudo python3 servercnc2.py -c [commands]
     python clientcnc2.py
@@ -33,24 +33,24 @@ the email address to client via packet. Client receives the email address and us
 API, it reads the contents of the first email in the inbox and runs that commands on client.
 
 
-# Things to know
+### Things to know
 
 There are some parts to be hard-coded such as client key, fernet key, email address.
 Credentials from email is required for using Gmail API which has instruction on the bottom
 of this file.
 
-# Pcap trace files
+### Pcap trace files
 commands1-1.pcapng -> running servercnc1 and clientcnc1 with commands1
 commands1-2.pcapng -> running servercnc1 and clientcnc1 with commands2
 commands2-1.pcapng -> running servercnc2 and clientcnc2 with commands1
 
 
-# install scapy
+### install scapy
 sudo apt-get update
 sudo apt-get install python-pip
 pip install scapy
 pip install cryptography
 
-# Gmail api instruction
+### Gmail api instruction
 https://developers.google.com/gmail/api/quickstart/python
 
