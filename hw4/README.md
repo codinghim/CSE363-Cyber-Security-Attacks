@@ -8,6 +8,5 @@ Author: Daniel Himchan Yun, Stony Brook University CSE363
 
 2. I used the same method of ret2libc described in the lecture. I found the address where libc code resides and offsets of system and exit. I also neeeded system arguments(\bin\sh) which could be found using strings. Then, I constructed a buffer string with format of JUNK bytes(of 264 bytes until stack pointer where it affects eip) + address of libc system function + address of libc exit function + system argument(/bin/sh string). I called subprocess to run ./vuln2 with the buffer string as an argument.
 
-3. Could not finish
 
 ** I could run it with command line commands python exploit1.py but it failed to run in make file. Please test it with pure command lines if makefile does not work.
